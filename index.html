@@ -63,7 +63,6 @@
             transform: scale(1.2);
         }
 
-        /* Désactiver hover sur mobile */
         @media (hover: none) {
             .star:hover {
                 transform: none;
@@ -94,6 +93,7 @@
             opacity: 0;
             transition: all 0.5s ease;
             z-index: 10;
+            overflow: visible;
         }
 
         .message-container.show {
@@ -112,6 +112,54 @@
             font-size: 1.2rem;
             line-height: 1.6;
             margin-bottom: 15px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-yes:hover {
+            background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #f44336 0%, #da190b 100%);
+            color: white;
+        }
+
+        .btn-no:hover {
+            background: linear-gradient(135deg, #da190b 0%, #c62828 100%);
         }
 
         .instruction {
@@ -173,7 +221,6 @@
             }
         }
 
-        /* Tablette (481px - 768px) */
         @media (max-width: 768px) and (min-width: 481px) {
             .star {
                 font-size: 2.5rem;
@@ -209,12 +256,16 @@
                 font-size: 1.1rem;
             }
             
+            .btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+            
             .heart {
                 font-size: 1.8rem;
             }
         }
 
-        /* Mobile (jusqu'à 480px) */
         @media (max-width: 480px) {
             .star {
                 font-size: 2rem;
@@ -260,6 +311,16 @@
                 margin-bottom: 12px;
             }
             
+            .buttons-container {
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
             .heart {
                 font-size: 1.5rem;
             }
@@ -274,7 +335,6 @@
             }
         }
 
-        /* Desktop large (1024px et plus) */
         @media (min-width: 1024px) {
             .star {
                 font-size: 3.5rem;
@@ -306,9 +366,13 @@
             .message-container p {
                 font-size: 1.3rem;
             }
+            
+            .btn {
+                padding: 18px 50px;
+                font-size: 1.3rem;
+            }
         }
 
-        /* Orientation paysage sur mobile */
         @media (max-width: 768px) and (orientation: landscape) {
             .stars-container {
                 gap: 15px;
@@ -345,6 +409,16 @@
                 font-size: 0.9rem;
                 margin-bottom: 8px;
             }
+            
+            .buttons-container {
+                gap: 10px;
+                margin-top: 15px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -371,22 +445,24 @@
 
     <div class="message-container" id="messageContainer">
         <h1>💕 Message pour toi 💕</h1>
-        <p>Daynaith, j'ai pris le temps de t'observer pendant ce live et de regarder quelques-uns de tes TikTok ainsi que tes publications. Je trouve que tu es une personne incroyable et que je suis capable de t'apporter l'amour que tu mérites et j'aimerais vraiment te connaître mieux.</p>
+        <p>Daynaith, j'ai pris le temps de t'observer pendant ce live et de regarder quelques-uns de tes TikTok ainsi que tes publications. Je trouve que tu es une personne incroyable et que je suis capable de t'apporter l'amour que tu mérites et j'aimerais vraiment mieux te connaître.</p>
         <p>Serais-tu d'accord pour qu'on apprenne à se connaître pour un début ? ☺️ ☺️</p>
-        <p style="margin-top: 20px; font-size: 1rem; color: #764ba2;">
-            
-        </p>
+        <div class="buttons-container">
+            <button class="btn btn-yes" id="btnYes">😊 Oui</button>
+            <button class="btn btn-no" id="btnNo">😢 Non</button>
+        </div>
     </div>
 
     <script>
         const stars = document.querySelectorAll('.star');
         const messageContainer = document.getElementById('messageContainer');
         const counter = document.getElementById('count');
+        const counterContainer = document.getElementById('counter');
         const heartsContainer = document.getElementById('hearts');
+        const instruction = document.querySelector('.instruction');
         let litCount = 0;
         const totalStars = stars.length;
 
-        // Fonction pour créer des cœurs flottants
         function createHeart() {
             const heart = document.createElement('div');
             heart.className = 'heart';
@@ -401,24 +477,21 @@
             }, 6000);
         }
 
-        // Créer des cœurs périodiquement
         setInterval(createHeart, 2000);
 
-        stars.forEach((star, index) => {
+        stars.forEach((star) => {
             star.addEventListener('click', () => {
                 if (!star.classList.contains('lit')) {
                     star.classList.add('lit');
                     litCount++;
                     counter.textContent = litCount;
-                    
-                    // Animation de particules
                     createHeart();
                     
-                    // Vérifier si toutes les étoiles sont allumées
                     if (litCount === totalStars) {
                         setTimeout(() => {
                             messageContainer.classList.add('show');
-                            // Créer plusieurs cœurs pour célébrer
+                            instruction.style.display = 'none';
+                            counterContainer.style.display = 'none';
                             for (let i = 0; i < 10; i++) {
                                 setTimeout(() => createHeart(), i * 100);
                             }
@@ -426,21 +499,15 @@
                     }
                 }
             });
+        });
 
-            // Effet au survol
-            star.addEventListener('mouseenter', () => {
-                if (!star.classList.contains('lit')) {
-                    star.style.transform = 'scale(1.1)';
-                }
-            });
+        document.getElementById('btnYes').addEventListener('click', () => {
+            window.location.href = 'whatsapp://send?phone=4915156684392';
+        });
 
-            star.addEventListener('mouseleave', () => {
-                if (!star.classList.contains('lit')) {
-                    star.style.transform = 'scale(1)';
-                }
-            });
+        document.getElementById('btnNo').addEventListener('click', () => {
+            window.open('https://www.tiktok.com/@jfpt01', '_blank');
         });
     </script>
 </body>
 </html>
-
