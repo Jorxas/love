@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Message Secret ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stars-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .star {
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: grayscale(100%) brightness(0.3);
+            user-select: none;
+            animation: float 3s ease-in-out infinite;
+            touch-action: manipulation;
+        }
+
+        .star:nth-child(1) { animation-delay: 0s; }
+        .star:nth-child(2) { animation-delay: 0.2s; }
+        .star:nth-child(3) { animation-delay: 0.4s; }
+        .star:nth-child(4) { animation-delay: 0.6s; }
+        .star:nth-child(5) { animation-delay: 0.8s; }
+        .star:nth-child(6) { animation-delay: 1s; }
+        .star:nth-child(7) { animation-delay: 1.2s; }
+
+        .star.lit {
+            filter: grayscale(0%) brightness(1);
+            transform: scale(1.3);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        /* Désactiver hover sur mobile */
+        @media (hover: none) {
+            .star:hover {
+                transform: none;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .message-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        .message-container.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .message-container h1 {
+            color: #764ba2;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .message-container p {
+            color: #333;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .instruction {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .counter {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 192, 203, 0.6);
+            animation: heartFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Tablette (481px - 768px) */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .star {
+                font-size: 2.5rem;
+            }
+            
+            .stars-container {
+                gap: 25px;
+                padding: 15px;
+            }
+            
+            .instruction {
+                font-size: 1.1rem;
+                padding: 12px 25px;
+                top: 15px;
+            }
+            
+            .counter {
+                font-size: 1rem;
+                padding: 8px 18px;
+                bottom: 25px;
+            }
+            
+            .message-container {
+                padding: 35px 25px;
+                max-width: 450px;
+            }
+            
+            .message-container h1 {
+                font-size: 1.8rem;
+            }
+            
+            .message-container p {
+                font-size: 1.1rem;
+            }
+            
+            .heart {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Mobile (jusqu'à 480px) */
+        @media (max-width: 480px) {
+            .star {
+                font-size: 2rem;
+            }
+            
+            .stars-container {
+                gap: 20px;
+                padding: 10px;
+                min-height: calc(100vh - 140px);
+            }
+            
+            .instruction {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 350px;
+            }
+            
+            .counter {
+                font-size: 0.9rem;
+                padding: 8px 15px;
+                bottom: 15px;
+                width: auto;
+            }
+            
+            .message-container {
+                padding: 25px 20px;
+                max-width: 90%;
+                width: 90%;
+            }
+            
+            .message-container h1 {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+            }
+            
+            .message-container p {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin-bottom: 12px;
+            }
+            
+            .heart {
+                font-size: 1.5rem;
+            }
+            
+            @keyframes float {
+                0%, 100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-15px);
+                }
+            }
+        }
+
+        /* Desktop large (1024px et plus) */
+        @media (min-width: 1024px) {
+            .star {
+                font-size: 3.5rem;
+            }
+            
+            .stars-container {
+                gap: 40px;
+            }
+            
+            .instruction {
+                font-size: 1.3rem;
+                padding: 18px 35px;
+            }
+            
+            .counter {
+                font-size: 1.2rem;
+                padding: 12px 25px;
+            }
+            
+            .message-container {
+                max-width: 550px;
+                padding: 45px;
+            }
+            
+            .message-container h1 {
+                font-size: 2.2rem;
+            }
+            
+            .message-container p {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Orientation paysage sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .stars-container {
+                gap: 15px;
+                padding: 10px;
+            }
+            
+            .star {
+                font-size: 1.8rem;
+            }
+            
+            .instruction {
+                font-size: 0.85rem;
+                padding: 8px 15px;
+                top: 5px;
+            }
+            
+            .counter {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+                bottom: 10px;
+            }
+            
+            .message-container {
+                padding: 20px 15px;
+                max-width: 400px;
+            }
+            
+            .message-container h1 {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .message-container p {
+                font-size: 0.9rem;
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="instruction">
+        ✨ Clique sur toutes les étoiles pour révéler le message ✨
+    </div>
+
+    <div class="stars-container" id="starsContainer">
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+    </div>
+
+    <div class="counter" id="counter">
+        Étoiles allumées: <span id="count">0</span> / 7
+    </div>
+
+    <div class="hearts" id="hearts"></div>
+
+    <div class="message-container" id="messageContainer">
+        <h1>💕 Message pour toi 💕</h1>
+        <p>Daynaith, j'ai pris le temps de t'observer pendant ce live et de regarder quelques-uns de tes TikTok ainsi que tes publications. Je trouve que tu es une personne incroyable et que je suis capable de t'apporter l'amour que tu mérites et j'aimerais vraiment te connaître mieux.</p>
+        <p>Serais-tu d'accord pour qu'on se parle ? ☺️</p>
+        <p style="margin-top: 20px; font-size: 1rem; color: #764ba2;">
+            
+        </p>
+    </div>
+
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const messageContainer = document.getElementById('messageContainer');
+        const counter = document.getElementById('count');
+        const heartsContainer = document.getElementById('hearts');
+        let litCount = 0;
+        const totalStars = stars.length;
+
+        // Fonction pour créer des cœurs flottants
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '💖';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+
+        // Créer des cœurs périodiquement
+        setInterval(createHeart, 2000);
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                if (!star.classList.contains('lit')) {
+                    star.classList.add('lit');
+                    litCount++;
+                    counter.textContent = litCount;
+                    
+                    // Animation de particules
+                    createHeart();
+                    
+                    // Vérifier si toutes les étoiles sont allumées
+                    if (litCount === totalStars) {
+                        setTimeout(() => {
+                            messageContainer.classList.add('show');
+                            // Créer plusieurs cœurs pour célébrer
+                            for (let i = 0; i < 10; i++) {
+                                setTimeout(() => createHeart(), i * 100);
+                            }
+                        }, 500);
+                    }
+                }
+            });
+
+            // Effet au survol
+            star.addEventListener('mouseenter', () => {
+                if (!star.classList.contains('lit')) {
+                    star.style.transform = 'scale(1.1)';
+                }
+            });
+
+            star.addEventListener('mouseleave', () => {
+                if (!star.classList.contains('lit')) {
+                    star.style.transform = 'scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
